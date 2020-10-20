@@ -25,6 +25,9 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
+  console.log('whaddup world');
+  console.warn('this is a warning');
+  console.error('this is an error');
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -63,6 +66,7 @@ const App: () => React$Node = () => {
               <Text style={styles.sectionDescription}>
                 Read the docs to discover what to do next:
               </Text>
+              <Text style={styles.sectionDescription}>Write the docs</Text>
             </View>
             <LearnMoreLinks />
           </View>
