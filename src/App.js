@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -6,7 +7,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,6 +15,7 @@ import {
   View,
   Text,
   StatusBar,
+  FlatList,
 } from 'react-native';
 
 import {
@@ -23,59 +25,73 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+// Navagation
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// project files
-import ColorBox from './Components/ColorBox';
+//Components
+import ReactSpeed from './ReactSpeed/ReactSpeed';
+import SignInScreen from './AuthScreens/SiginInScreen';
+import SignUpScreen from './AuthScreens/SignUpScreen';
+import ResetPasswordScreen from './AuthScreens/ResetPasswordScreen';
+import AuthIntro from './AuthScreens/AuthIntro';
+
+const Stack = createStackNavigator();
 
 const App = () => {
+  const [userToken, setUserToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSignout, setSignout] = useState(false);
+
+  if (isLoading) {
+    // When we haven't finished checking for the token yet
+    return <View />;
+  }
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <Text style={styles.title}>Here are some colors:</Text>
-      <ColorBox colorName="Cyan" hexCode="#2aa198" />
-      <ColorBox colorName="2" hexCode="#268bd2" />
-      <ColorBox colorName="3" hexCode="#d33682" />
-      <ColorBox colorName="4" hexCode="#cb4b16" />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {userToken == null ? (
+          // No token found, user isn't signed in
+          // <Stack.Screen
+          //   name="AuthApp"
+          //   component={AuthApp}
+          //   options={{
+          //     title: 'Who Are You?',
+          //     // When logging out, a pop animation feels intuitive
+          //     // You can remove this if you want the default 'push' animation
+          //     // animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+          //   }}
+          // />
+          <React.Fragment>
+            <Stack.Screen name="Welcome" component={AuthIntro} />
+            <Stack.Screen
+              name="SignIn"
+              component={SignInScreen}
+              options={{
+                title: 'Sign In',
+              }}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUpScreen}
+              options={{
+                title: 'Sign Up',
+              }}
+            />
+            <Stack.Screen
+              name="ResetPassword"
+              component={ResetPasswordScreen}
+            />
+          </React.Fragment>
+        ) : (
+          // User is signed in
+          <Stack.Screen name="App" component={ReactSpeed} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
 export default App;
