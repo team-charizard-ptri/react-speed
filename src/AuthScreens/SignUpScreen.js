@@ -9,6 +9,7 @@ import 'react-native-gesture-handler';
 
 import React from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
+import AuthContext from '../Utils/Context';
 
 import {
   Header,
@@ -23,11 +24,13 @@ import {
 function SignUpScreen() {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const { signUp } = React.useContext(AuthContext);
 
   const handleSignUp = () => {
     console.log('Signing user up');
     console.log('username:', username);
     console.log('pwd:', password);
+    signUp();
     setUsername('');
     setPassword('');
   };

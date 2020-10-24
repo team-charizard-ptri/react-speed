@@ -19,16 +19,18 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 //Components
+import AuthContextWrapper from '../Utils/Context';
 
 function SignInScreen({ navigation }) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const { signIn } = React.useContext(AuthContextWrapper);
 
-  // const { signIn } = React.useContext(AuthContext);
   const handleSignIn = () => {
     console.log('Sigining user In');
     console.log('username:', username);
     console.log('pwd:', password);
+    signIn();
     setUsername('');
     setPassword('');
   };
@@ -50,7 +52,7 @@ function SignInScreen({ navigation }) {
       <Button title="Sign in" onPress={handleSignIn} />
       <Button
         title="Forgot Password?"
-        onPress={() => navigation.push(navigation)}
+        onPress={() => navigation.push('ResetPassword')}
       />
     </View>
   );
