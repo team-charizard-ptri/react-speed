@@ -1,25 +1,25 @@
 import React from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
-  FlatList,
-  Button,
+  // Button,
 } from 'react-native';
 
 const Scores = ({ navigation }) => {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.main}>
       <Text>Scores</Text>
-      <Button
-        title="Go to Scores... again"
-        onPress={() => navigation.push('Feed')}
-      />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default Scores;
