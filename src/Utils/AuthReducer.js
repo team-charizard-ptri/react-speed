@@ -1,26 +1,24 @@
-import React, { useMemo } from 'react';
-
 const authReducer = (prevState, action) => {
   console.log('In reducer');
   console.log('action', action);
   switch (action.type) {
-    case 'RESTORE_TOKEN':
+    case 'IS_USER_SIGNED_IN':
       return {
         ...prevState,
-        userToken: action.token,
+        user: action.userFirebase,
         isLoading: false,
       };
     case 'SIGN_IN':
       return {
         ...prevState,
         isSignout: false,
-        userToken: action.token,
+        user: action.userFirebase,
       };
     case 'SIGN_OUT':
       return {
         ...prevState,
         isSignout: true,
-        userToken: null,
+        user: null,
       };
   }
 };
