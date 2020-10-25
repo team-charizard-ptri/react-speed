@@ -1,25 +1,29 @@
 import React from 'react';
 import {
-  SafeAreaView,
+  // SafeAreaView,
   StyleSheet,
-  ScrollView,
+  // ScrollView,
   View,
   Text,
-  StatusBar,
-  FlatList,
-  Button,
+  // StatusBar,
+  // FlatList,
+  // Button,
 } from 'react-native';
 
 const Feed = ({ navigation }) => {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.main}>
       <Text>Feed</Text>
-      <Button
-        title="Go to Feed... again"
-        onPress={() => navigation.push('Feed')}
-      />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default Feed;
