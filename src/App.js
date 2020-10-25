@@ -39,7 +39,13 @@ const App = () => {
   useEffect(() => {
     const userFirebase = auth().currentUser;
 
-    dispatch({ type: 'IS_USER_SIGNED_IN', userFirebase: userFirebase });
+    const dispatched = dispatch({
+      type: 'IS_USER_SIGNED_IN',
+      userFirebase: userFirebase,
+    });
+
+    //clean up function
+    return dispatched;
   }, []);
 
   const authContext = useMemo(
