@@ -9,27 +9,27 @@ import 'react-native-gesture-handler';
 
 import React from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
-import AuthContext from '../Utils/Context';
 
 //Components
+import AuthContextWrapper from '../Utils/Context';
 
-function SignUpScreen() {
+function SignInScreen({ navigation }) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const { signUp } = React.useContext(AuthContext);
+  const { signIn } = React.useContext(AuthContextWrapper);
 
-  const handleSignUp = () => {
-    console.log('Signing user up');
+  const handleSignIn = () => {
+    console.log('Sigining user In');
     console.log('username:', username);
     console.log('pwd:', password);
-    signUp({ username, password });
+    signIn({ username, password });
     setUsername('');
     setPassword('');
   };
 
   return (
     <View>
-      <Text>Sign Up!!!</Text>
+      <Text>Sign In!!!</Text>
       <TextInput
         placeholder="Username"
         value={username}
@@ -41,9 +41,13 @@ function SignUpScreen() {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Sign Up" onPress={handleSignUp} />
+      <Button title="Sign in" onPress={handleSignIn} />
+      <Button
+        title="Forgot Password?"
+        onPress={() => navigation.push('ResetPassword')}
+      />
     </View>
   );
 }
 
-export default SignUpScreen;
+export default SignInScreen;
