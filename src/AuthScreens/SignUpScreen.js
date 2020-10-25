@@ -11,14 +11,6 @@ import React from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import AuthContext from '../Utils/Context';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
 //Components
 
 function SignUpScreen() {
@@ -30,7 +22,7 @@ function SignUpScreen() {
     console.log('Signing user up');
     console.log('username:', username);
     console.log('pwd:', password);
-    signUp();
+    signUp({ username, password });
     setUsername('');
     setPassword('');
   };

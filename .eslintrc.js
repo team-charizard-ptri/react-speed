@@ -4,13 +4,8 @@ module.exports = {
     '@react-native-community',
     'eslint:recommended',
     'plugin:react/recommended',
-    'airbnb',
-    'prettier',
-    'prettier/react',
-    'plugin:prettier/recommended',
   ],
-  parser: 'babel-eslint',
-  plugins: [
-    'prettier',
-  ]
+  rules: {
+    'react/prop-types': 0,
+  },
 };

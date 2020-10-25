@@ -7,36 +7,20 @@ import 'react-native-gesture-handler';
  * @flow strict-local
  */
 
-import React, { useState, useReducer, useMemo, useEffect } from 'react';
+import React, { useReducer, useMemo, useEffect } from 'react';
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  FlatList,
-} from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 // Navagation
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AsyncStorage from '@react-native-community/async-storage';
+import auth from '@react-native-firebase/auth';
 
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //Components
 import ReactSpeed from './ReactSpeed/ReactSpeed';
-import SignInScreen from './AuthScreens/SiginInScreen';
+import SignInScreen from './AuthScreens/SignInScreen';
 import SignUpScreen from './AuthScreens/SignUpScreen';
 import ResetPasswordScreen from './AuthScreens/ResetPasswordScreen';
 import AuthIntro from './AuthScreens/AuthIntro';
@@ -47,50 +31,73 @@ const Stack = createStackNavigator();
 
 const App = () => {
   const [state, dispatch] = useReducer(authReducer, {
-    isLoading: false, // should be ture
+    isLoading: true, // should be ture
     isSignout: false,
-    userToken: 'null',
+    user: null,
   });
 
   useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
-    const bootstrapAsync = async () => {
-      let userToken;
+    const userFirebase = auth().currentUser;
 
-      try {
-        userToken = await AsyncStorage.getItem('userToken');
-      } catch (e) {
-        // Restoring token failed
-      }
+    const dispatched = dispatch({
+      type: 'IS_USER_SIGNED_IN',
+      userFirebase: userFirebase,
+    });
 
-      // After restoring token, we may need to validate it in production apps
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
-    };
-
-    bootstrapAsync();
+    //clean up function
+    return dispatched;
   }, []);
 
   const authContext = useMemo(
     () => ({
-      signIn: async data => {
+      signIn: async (data) => {
         // In a production app, we need to send some data (usually username, password) to server and get a token
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `AsyncStorage`
         // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        try {
+          await auth().signInWithEmailAndPassword(data.username, data.password);
+          console.log('User successfully signed in');
+          const userFirebase = auth().currentUser;
+          dispatch({ type: 'SIGN_IN', userFirebase: userFirebase });
+        } catch (error) {
+          console.error(error);
+        }
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async data => {
+      signOut: async () => {
+        await dispatch({ type: 'SIGN_OUT' });
+        auth().signOut();
+        console.log('User signed out!');
+      },
+      signUp: async (data) => {
         // In a production app, we need to send user data to server and get a token
         // We will also need to handle errors if sign up failed
         // After getting token, we need to persist the token using `AsyncStorage`
         // In the example, we'll use a dummy token
 
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        auth()
+          .createUserWithEmailAndPassword(data.username, data.password)
+          .then(() => {
+            console.log('User account created & signed in!');
+          })
+          .catch((error) => {
+            if (error.code === 'auth/email-already-in-use') {
+              console.log('That email address is already in use!');
+            }
+
+            if (error.code === 'auth/invalid-email') {
+              console.log('That email address is invalid!');
+            }
+
+            if (error.code === 'auth/weak-password') {
+              console.log('That password is not secure');
+            }
+
+            console.error(error);
+          });
+
+        const userFirebase = auth().currentUser;
+        dispatch({ type: 'SIGN_IN', userFirebase: userFirebase });
       },
     }),
     [],
@@ -99,7 +106,7 @@ const App = () => {
   if (state.isLoading) {
     // When we haven't finished checking for the token yet
     return (
-      <View>
+      <View style={styles.loading}>
         <Text>Loading...</Text>
       </View>
     );
@@ -108,7 +115,7 @@ const App = () => {
     <AuthContextWrapper.Provider value={authContext}>
       <NavigationContainer>
         <Stack.Navigator>
-          {state.userToken == null ? (
+          {state.user == null ? (
             // No token found, user isn't signed in
             <React.Fragment>
               <Stack.Screen name="Welcome" component={AuthIntro} />
@@ -132,17 +139,33 @@ const App = () => {
               />
             </React.Fragment>
           ) : (
-            // Something to consider for logout
-            // When logging out, a pop animation feels intuitive
-            // You can remove this if you want the default 'push' animation
-            // animationTypeForReplace: state.isSignout ? 'pop' : 'push',
             // User is signed in
-            <Stack.Screen name="App" component={ReactSpeed} />
+            <Stack.Screen
+              name="App"
+              component={ReactSpeed}
+              options={{
+                // When logging out, a pop animation feels intuitive
+                // You can remove this if you want the default 'push' animation
+                animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+              }}
+            />
           )}
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContextWrapper.Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  loading: {
+    height: 50,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'black',
+    flex: 1, // make the component take up the whole height of the screen
+    backgroundColor: 'pink',
+  },
+});
 
 export default App;
