@@ -12,6 +12,7 @@ import {
   // ImageBackground,
   Dimensions,
 } from 'react-native';
+import Svg, { Line } from 'react-native-svg';
 import DragRectangle from '../../Utils/dragRectangle';
 import FastImage from 'react-native-fast-image';
 
@@ -23,6 +24,7 @@ const Feed = ({ navigation }) => {
   const [startTime, updateStartTime] = useState(0);
   const [clickTime, updateClickTime] = useState(0);
   const [gameOn, updateGame] = useState(false);
+  const [madeGuess, updateGuess] = useState(false);
   const [
     imageURLArray,
     // setImageURLArray
@@ -35,12 +37,11 @@ const Feed = ({ navigation }) => {
   const [currentImageHeight, setCurrentImageHeight] = useState();
 
   const handleNextImage = useCallback(() => {
-    setCurrentImageIndex((prevIndex) => prevIndex + 1);
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageURLArray.length);
   }, []);
 
   const locateRelease = ({ nativeEvent }) => {
     updateClickTime(nativeEvent.timestamp);
-    updateGame(false);
     dragRectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
     dragRectangle.calcOppositeVerts();
 
@@ -53,6 +54,7 @@ const Feed = ({ navigation }) => {
     const start = Math.floor(startTime / 1000);
     const end = Math.floor(nativeEvent.timestamp / 1000);
     console.log('Reaction Time -> ', end - start);
+    updateGuess(true);
   };
 
   const locateClickStart = ({ nativeEvent }) => {
@@ -64,11 +66,67 @@ const Feed = ({ navigation }) => {
 
   const startGame = () => {
     console.log('START TIME -> ', Date.now());
+    const rectangle = new DragRectangle();
+    updateRectangle(rectangle);
     updateGame(true);
     handleNextImage();
   };
+
+  const endGame = () => {
+    updateGame(false);
+    updateGuess(false);
+  };
+
+  const drawRectangle = () => {
+    if (!dragRectangle.isFull) {
+      return;
+    }
+    const { p1, p2, p3, p4 } = dragRectangle;
+    return (
+      <Svg height={currentImageHeight} width={screenWidth}>
+        <Line
+          x1={p1.xCoord}
+          y1={p1.yCoord}
+          x2={p3.xCoord}
+          y2={p3.yCoord}
+          stroke="red"
+          strokeWidth="2"
+        />
+        <Line
+          x1={p1.xCoord}
+          y1={p1.yCoord}
+          x2={p4.xCoord}
+          y2={p4.yCoord}
+          stroke="red"
+          strokeWidth="2"
+        />
+        <Line
+          x1={p2.xCoord}
+          y1={p2.yCoord}
+          x2={p3.xCoord}
+          y2={p3.yCoord}
+          stroke="red"
+          strokeWidth="2"
+        />
+        <Line
+          x1={p2.xCoord}
+          y1={p2.yCoord}
+          x2={p4.xCoord}
+          y2={p4.yCoord}
+          stroke="red"
+          strokeWidth="2"
+        />
+      </Svg>
+    );
+  };
   return (
     <>
+      {madeGuess && (
+        <View>
+          <Button title="Next!" color="blue" onPress={startGame} />
+          <Button title="Finish!" color="blue" onPress={endGame} />
+        </View>
+      )}
       {gameOn && (
         <View
           style={styles.main}
@@ -86,8 +144,11 @@ const Feed = ({ navigation }) => {
                 (evt.nativeEvent.height / evt.nativeEvent.width) * screenWidth;
               setCurrentImageHeight(imageHeight);
               console.log('onLoad');
-            }}
-          />
+            }}>
+            {madeGuess && (
+              <View style={styles.rectangle}>{drawRectangle()}</View>
+            )}
+          </FastImage>
         </View>
       )}
       {!gameOn && <Button title="Go!" color="blue" onPress={startGame} />}
@@ -113,9 +174,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
+    overflow: 'visible',
+    zIndex: 1,
   },
   button: {
     backgroundColor: 'green',
+  },
+
+  buttonView: {
+    zIndex: 0,
+  },
+
+  rectangle: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    overflow: 'visible',
+    zIndex: 4,
   },
 });
 
