@@ -26,6 +26,11 @@ const Feed = ({ navigation }) => {
     dragRectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
     dragRectangle.calcOppositeVerts();
 
+    console.log('Rectanble Point 1 ->', dragRectangle.p1);
+    console.log('Rectanble Point 2 ->', dragRectangle.p2);
+    console.log('Rectanble Point 3 ->', dragRectangle.p3);
+    console.log('Rectanble Point 4 ->', dragRectangle.p4);
+
     console.log('TimeStamp -> ', clickTime);
     const start = Math.floor(startTime / 1000);
     const end = Math.floor(nativeEvent.timestamp / 1000);
