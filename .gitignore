@@ -21,6 +21,14 @@ DerivedData
 *.ipa
 *.xcuserstate
 
+*.plist
+*.xcworkspacedata
+/ios/GoogleService-Info.plist
+/ios/reactspeed/info.plist
+
+ios/GoogleService-Info.plist
+ios/reactspeed/info.plist
+
 # Android/IntelliJ
 #
 build/
