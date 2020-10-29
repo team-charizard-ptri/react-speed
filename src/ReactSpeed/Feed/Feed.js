@@ -20,16 +20,11 @@ const Feed = ({ navigation }) => {
   const [gameOn, updateGame] = useState(false);
 
   const locateRelease = ({ nativeEvent }) => {
-    // console.log('TouchEvent -> ', nativeEvent);
-    console.log('LocX -> ', nativeEvent.locationX);
-    console.log('LocY -> ', nativeEvent.locationY);
 
     updateClickTime(nativeEvent.timestamp);
     updateGame(false);
     dragRectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
     dragRectangle.calcOppositeVerts();
-    console.log('Rectangle Coords -> ', dragRectangle);
-    console.log('Rectangle  Point 4 -> ', dragRectangle.p4);
 
     console.log('TimeStamp -> ', clickTime);
     const start = Math.floor(startTime / 1000);
