@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   // SafeAreaView,
   StyleSheet,
@@ -25,19 +25,12 @@ const Feed = ({ navigation }) => {
   const [clickTime, updateClickTime] = useState(0);
   const [gameOn, updateGame] = useState(false);
   const [madeGuess, updateGuess] = useState(false);
-  const [
-    imageURLArray,
-    // setImageURLArray
-  ] = useState([
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRFOljBq8BTj5GxrXVDM1jCP_Ug-6d-hLNPpg&usqp=CAU',
-    'https://unsplash.it/400/400?image=1',
-    'https://media.npr.org/assets/img/2019/01/02/gettyimages-1058306908-0b38ff8a90d7bf88fea3133d8b72498665f63e12.jpg',
-  ]);
+  const [imageURLArray, setImageURLArray] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentImageHeight, setCurrentImageHeight] = useState();
 
   const handleNextImage = useCallback(() => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageURLArray.length);
+    setCurrentImageIndex((prevIndex) => prevIndex + 1);
   }, []);
 
   const locateRelease = ({ nativeEvent }) => {
@@ -119,6 +112,35 @@ const Feed = ({ navigation }) => {
       </Svg>
     );
   };
+
+  const fetchImages = useCallback(async () => {
+    const url =
+      'ENDPOINT GOES HERE';
+    // Get result to firebase function
+    const result = await fetch(url);
+
+    if (result.ok) {
+      const images = await result.json();
+      console.log('images', images);
+      return images;
+    }
+  }, []);
+
+  // On Feed mount, call the first set of images
+  useEffect(() => {
+    fetchImages().then((data) => setImageURLArray(data));
+  }, [fetchImages]);
+
+  // Once user has gone thru frist set of images, call the next set
+  useEffect(() => {
+    console.log('currentImageIndex', currentImageIndex);
+    if (currentImageIndex === imageURLArray.length - 2) {
+      fetchImages().then((data) =>
+        setImageURLArray((prevState) => [...prevState, ...data]),
+      );
+    }
+  }, [currentImageIndex, imageURLArray, fetchImages]);
+
   return (
     <>
       {madeGuess && (
@@ -155,18 +177,6 @@ const Feed = ({ navigation }) => {
     </>
   );
 };
-
-/* const fetchImages = useCallback(async () => {
-    const url =
-      'https://us-central1-react-speed-7d09f.cloudfunctions.net/helloWorldrs';
-    // Get result to firebase function
-    const result = await fetch(url);
-
-    if (result.ok) {
-      const images = await result.json();
-      setImageURLArray(images);
-    }
-  }, []); */
 
 const styles = StyleSheet.create({
   main: {
