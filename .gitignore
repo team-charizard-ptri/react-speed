@@ -69,3 +69,6 @@ buck-out/
 #env variables
 .env
 env
+
+ios/Podfile.lock
+ios/reactspeed.xcodeproj/project.pbxproj
