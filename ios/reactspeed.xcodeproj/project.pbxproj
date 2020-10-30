@@ -15,11 +15,11 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* reactspeedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* reactspeedTests.m */; };
-		7113E6192541272900B8664C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7113E6182541272800B8664C /* GoogleService-Info.plist */; };
 		7BE13DCCAAC8D9DFACCA6364 /* libPods-reactspeed-reactspeedTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C063325222A461525E30E7C /* libPods-reactspeed-reactspeedTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9A3F30A514DE34458C487E08 /* libPods-reactspeed-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23D40877C79D703DD04569E8 /* libPods-reactspeed-tvOSTests.a */; };
 		AAECFC9276393F958B380D54 /* libPods-reactspeed-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED3DE92F6A94C0C19FAD991 /* libPods-reactspeed-tvOS.a */; };
+		D84BCD2B2547A37A005DE075 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D84BCD2A2547A37A005DE075 /* GoogleService-Info.plist */; };
 		E1C83C41E804A726399A99B7 /* libPods-reactspeed.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DDEB2BC8414C00082004C93 /* libPods-reactspeed.a */; };
 /* End PBXBuildFile section */
 
@@ -58,7 +58,6 @@
 		2D02E47B1E0B4A5D006451C7 /* reactspeed-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "reactspeed-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* reactspeed-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "reactspeed-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		40D55B89AA8D9B7BD82E9287 /* Pods-reactspeed.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-reactspeed.release.xcconfig"; path = "Target Support Files/Pods-reactspeed/Pods-reactspeed.release.xcconfig"; sourceTree = "<group>"; };
-		7113E6182541272800B8664C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		79E5FE368E23DE22E3B89A11 /* Pods-reactspeed-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-reactspeed-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-reactspeed-tvOSTests/Pods-reactspeed-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = reactspeed/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		897E968DC14BF83323CD4581 /* Pods-reactspeed-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-reactspeed-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-reactspeed-tvOS/Pods-reactspeed-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -67,6 +66,7 @@
 		ADF19714EF9658BBB8A40859 /* Pods-reactspeed-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-reactspeed-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-reactspeed-tvOSTests/Pods-reactspeed-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		B0DCEA16DDA37A208F76AAFD /* Pods-reactspeed-reactspeedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-reactspeed-reactspeedTests.debug.xcconfig"; path = "Target Support Files/Pods-reactspeed-reactspeedTests/Pods-reactspeed-reactspeedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D7E39643E295E2122592F805 /* Pods-reactspeed.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-reactspeed.debug.xcconfig"; path = "Target Support Files/Pods-reactspeed/Pods-reactspeed.debug.xcconfig"; sourceTree = "<group>"; };
+		D84BCD2A2547A37A005DE075 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -176,7 +176,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				7113E6182541272800B8664C /* GoogleService-Info.plist */,
+				D84BCD2A2547A37A005DE075 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* reactspeed */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* reactspeedTests */,
@@ -345,7 +345,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				7113E6192541272900B8664C /* GoogleService-Info.plist in Resources */,
+				D84BCD2B2547A37A005DE075 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
