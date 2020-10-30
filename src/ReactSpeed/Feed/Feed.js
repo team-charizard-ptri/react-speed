@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   // SafeAreaView,
   StyleSheet,
@@ -17,14 +17,7 @@ import FastImage from 'react-native-fast-image';
 const screenWidth = Math.round(Dimensions.get('window').width);
 
 const Feed = ({ navigation }) => {
-  const [
-    imageURLArray,
-    // setImageURLArray
-  ] = useState([
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRFOljBq8BTj5GxrXVDM1jCP_Ug-6d-hLNPpg&usqp=CAU',
-    'https://unsplash.it/400/400?image=1',
-    'https://media.npr.org/assets/img/2019/01/02/gettyimages-1058306908-0b38ff8a90d7bf88fea3133d8b72498665f63e12.jpg',
-  ]);
+  const [imageURLArray, setImageURLArray] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentImageHeight, setCurrentImageHeight] = useState();
 
@@ -32,17 +25,32 @@ const Feed = ({ navigation }) => {
     setCurrentImageIndex((prevIndex) => prevIndex + 1);
   }, []);
 
-  /* const fetchImages = useCallback(async () => {
-    const url =
-      'https://us-central1-react-speed-7d09f.cloudfunctions.net/helloWorldrs';
+  const fetchImages = useCallback(async () => {
+    const url = 'ENDPOINT GOES HERE';
     // Get result to firebase function
     const result = await fetch(url);
 
     if (result.ok) {
       const images = await result.json();
-      setImageURLArray(images);
+      console.log('images', images);
+      return images;
     }
-  }, []); */
+  }, []);
+
+  // On Feed mount, call the first set of images
+  useEffect(() => {
+    fetchImages().then((data) => setImageURLArray(data));
+  }, [fetchImages]);
+
+  // Once user has gone thru frist set of images, call the next set
+  useEffect(() => {
+    console.log('currentImageIndex', currentImageIndex);
+    if (currentImageIndex === imageURLArray.length - 2) {
+      fetchImages().then((data) =>
+        setImageURLArray((prevState) => [...prevState, ...data]),
+      );
+    }
+  }, [currentImageIndex, imageURLArray, fetchImages]);
 
   return (
     <View style={styles.main}>
