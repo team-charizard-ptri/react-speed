@@ -65,3 +65,10 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+#env variables
+.env
+env
+
+ios/Podfile.lock
+ios/reactspeed.xcodeproj/project.pbxproj
