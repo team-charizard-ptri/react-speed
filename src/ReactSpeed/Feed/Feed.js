@@ -15,6 +15,7 @@ import {
 import Svg, { Line } from 'react-native-svg';
 import DragRectangle from '../../Utils/dragRectangle';
 import FastImage from 'react-native-fast-image';
+import { FIREBASE_IMAGES } from '@env';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 
@@ -30,7 +31,7 @@ const Feed = ({ navigation }) => {
   const [currentImageHeight, setCurrentImageHeight] = useState();
 
   const handleNextImage = useCallback(() => {
-    setCurrentImageIndex((prevIndex) => prevIndex + 1);
+    setCurrentImageIndex(prevIndex => prevIndex + 1);
   }, []);
 
   const locateRelease = ({ nativeEvent }) => {
@@ -114,8 +115,7 @@ const Feed = ({ navigation }) => {
   };
 
   const fetchImages = useCallback(async () => {
-    const url =
-      'ENDPOINT GOES HERE';
+    const url = FIREBASE_IMAGES;
     // Get result to firebase function
     const result = await fetch(url);
 
@@ -128,15 +128,15 @@ const Feed = ({ navigation }) => {
 
   // On Feed mount, call the first set of images
   useEffect(() => {
-    fetchImages().then((data) => setImageURLArray(data));
+    fetchImages().then(data => setImageURLArray(data));
   }, [fetchImages]);
 
   // Once user has gone thru frist set of images, call the next set
   useEffect(() => {
     console.log('currentImageIndex', currentImageIndex);
     if (currentImageIndex === imageURLArray.length - 2) {
-      fetchImages().then((data) =>
-        setImageURLArray((prevState) => [...prevState, ...data]),
+      fetchImages().then(data =>
+        setImageURLArray(prevState => [...prevState, ...data]),
       );
     }
   }, [currentImageIndex, imageURLArray, fetchImages]);
@@ -153,14 +153,14 @@ const Feed = ({ navigation }) => {
         <View
           style={styles.main}
           onStartShouldSetResponder={() => true}
-          onResponderGrant={(event) => locateClickStart(event)}
-          onResponderRelease={(event) => locateRelease(event)}>
+          onResponderGrant={event => locateClickStart(event)}
+          onResponderRelease={event => locateRelease(event)}>
           <FastImage
             style={{ width: screenWidth, height: currentImageHeight }}
             source={{
               uri: imageURLArray[currentImageIndex],
             }}
-            onLoad={(evt) => {
+            onLoad={evt => {
               // used to fit the picture into the screen
               const imageHeight =
                 (evt.nativeEvent.height / evt.nativeEvent.width) * screenWidth;
