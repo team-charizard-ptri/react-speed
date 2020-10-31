@@ -23,8 +23,8 @@ const Feed = ({ navigation }) => {
   const [dragRectangle, updateRectangle] = useState();
   // eslint-disable-next-line no-unused-vars
   const [startTime, updateStartTime] = useState(0);
-  const [currentlyPlaying, updatePlaying] = useState(false);
-  const [notCurrentlyPlaying, updateNotPlaying] = useState(true);
+  const [canClick, updateCanClick] = useState(true);
+  // const [notCurrentlyPlaying, updateNotPlaying] = useState(true);
   const [gameOn, updateGame] = useState(false);
   const [madeGuess, updateGuess] = useState(false);
   const [currentReactionTime, updateTime] = useState(0);
@@ -33,16 +33,16 @@ const Feed = ({ navigation }) => {
   const [currentImageHeight, setCurrentImageHeight] = useState();
 
   const handleNextImage = useCallback(() => {
+    updateCanClick(true);
     setCurrentImageIndex((prevIndex) => prevIndex + 1);
   }, []);
 
   const startGame = () => {
-    if (notCurrentlyPlaying) {
+    if (canClick) {
       updateStartTime(Date.now());
       const rectangle = new DragRectangle();
       updateRectangle(rectangle);
       updateGame(true);
-      updatePlaying(true);
       handleNextImage();
     }
   };
@@ -53,20 +53,18 @@ const Feed = ({ navigation }) => {
   };
 
   const locateRelease = ({ nativeEvent }) => {
-    if (currentlyPlaying) {
-      dragRectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
-      dragRectangle.calcOppositeVerts();
+    dragRectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
+    dragRectangle.calcOppositeVerts();
 
-      const start = startTime;
-      const end = Date.now(); //nativeEvent.timestamp;
-      console.log('Reaction Time -> ', end - start);
-      updateTime(Math.round((end - start) / 10) / 100);
-      updateGuess(true);
-      setTimeout(() => {
-        updateNotPlaying(true);
-        startGame();
-      }, 1000);
-    }
+    const start = startTime;
+    const end = Date.now(); //nativeEvent.timestamp;
+    console.log('Reaction Time -> ', end - start);
+    updateTime(Math.round((end - start) / 10) / 100);
+    updateGuess(true);
+    updateCanClick(false);
+    setTimeout(() => {
+      startGame();
+    }, 1000);
   };
 
   const locateClickStart = ({ nativeEvent }) => {
