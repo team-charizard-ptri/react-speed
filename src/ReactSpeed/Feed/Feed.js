@@ -23,7 +23,8 @@ const Feed = ({ navigation }) => {
   const [dragRectangle, updateRectangle] = useState();
   // eslint-disable-next-line no-unused-vars
   const [startTime, updateStartTime] = useState(0);
-  const [clickTime, updateClickTime] = useState(0);
+  const [currentlyPlaying, updatePlaying] = useState(false);
+  const [notCurrentlyPlaying, updateNotPlaying] = useState(true);
   const [gameOn, updateGame] = useState(false);
   const [madeGuess, updateGuess] = useState(false);
   const [currentReactionTime, updateTime] = useState(0);
@@ -35,22 +36,37 @@ const Feed = ({ navigation }) => {
     setCurrentImageIndex((prevIndex) => prevIndex + 1);
   }, []);
 
+  const startGame = () => {
+    if (notCurrentlyPlaying) {
+      updateStartTime(Date.now());
+      const rectangle = new DragRectangle();
+      updateRectangle(rectangle);
+      updateGame(true);
+      updatePlaying(true);
+      handleNextImage();
+    }
+  };
+
+  const endGame = () => {
+    updateGame(false);
+    updateGuess(false);
+  };
+
   const locateRelease = ({ nativeEvent }) => {
-    updateClickTime(nativeEvent.timestamp);
-    dragRectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
-    dragRectangle.calcOppositeVerts();
+    if (currentlyPlaying) {
+      dragRectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
+      dragRectangle.calcOppositeVerts();
 
-    console.log('Rectanble Point 1 ->', dragRectangle.p1);
-    console.log('Rectanble Point 2 ->', dragRectangle.p2);
-    console.log('Rectanble Point 3 ->', dragRectangle.p3);
-    console.log('Rectanble Point 4 ->', dragRectangle.p4);
-
-    console.log('TimeStamp -> ', clickTime);
-    const start = startTime;
-    const end = Date.now(); //nativeEvent.timestamp;
-    console.log('Reaction Time -> ', end - start);
-    updateTime(Math.round((end - start) / 10) / 100);
-    updateGuess(true);
+      const start = startTime;
+      const end = Date.now(); //nativeEvent.timestamp;
+      console.log('Reaction Time -> ', end - start);
+      updateTime(Math.round((end - start) / 10) / 100);
+      updateGuess(true);
+      setTimeout(() => {
+        updateNotPlaying(true);
+        startGame();
+      }, 1000);
+    }
   };
 
   const locateClickStart = ({ nativeEvent }) => {
@@ -58,19 +74,6 @@ const Feed = ({ navigation }) => {
     rectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
     updateRectangle(rectangle);
     console.log('Start Rectangle P1 -> ', rectangle.p1);
-  };
-
-  const startGame = () => {
-    updateStartTime(Date.now());
-    const rectangle = new DragRectangle();
-    updateRectangle(rectangle);
-    updateGame(true);
-    handleNextImage();
-  };
-
-  const endGame = () => {
-    updateGame(false);
-    updateGuess(false);
   };
 
   const drawRectangle = () => {
@@ -147,7 +150,6 @@ const Feed = ({ navigation }) => {
     <>
       {madeGuess && (
         <View>
-          <Button title="Next!" color="blue" onPress={startGame} />
           <Button title="Finish!" color="blue" onPress={endGame} />
         </View>
       )}
