@@ -4,7 +4,7 @@ import {
   StyleSheet,
   // ScrollView,
   View,
-  // Text,
+  Text,
   // StatusBar,
   // FlatList,
   Button,
@@ -23,32 +23,48 @@ const Feed = ({ navigation }) => {
   const [dragRectangle, updateRectangle] = useState();
   // eslint-disable-next-line no-unused-vars
   const [startTime, updateStartTime] = useState(0);
-  const [clickTime, updateClickTime] = useState(0);
+  const [canClick, updateCanClick] = useState(true);
+  // const [notCurrentlyPlaying, updateNotPlaying] = useState(true);
   const [gameOn, updateGame] = useState(false);
   const [madeGuess, updateGuess] = useState(false);
+  const [currentReactionTime, updateTime] = useState(0);
   const [imageURLArray, setImageURLArray] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentImageHeight, setCurrentImageHeight] = useState();
 
   const handleNextImage = useCallback(() => {
-    setCurrentImageIndex(prevIndex => prevIndex + 1);
+    updateCanClick(true);
+    setCurrentImageIndex((prevIndex) => prevIndex + 1);
   }, []);
 
+  const startGame = () => {
+    if (canClick) {
+      updateStartTime(Date.now());
+      const rectangle = new DragRectangle();
+      updateRectangle(rectangle);
+      updateGame(true);
+      handleNextImage();
+    }
+  };
+
+  const endGame = () => {
+    updateGame(false);
+    updateGuess(false);
+  };
+
   const locateRelease = ({ nativeEvent }) => {
-    updateClickTime(nativeEvent.timestamp);
     dragRectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
     dragRectangle.calcOppositeVerts();
 
-    console.log('Rectanble Point 1 ->', dragRectangle.p1);
-    console.log('Rectanble Point 2 ->', dragRectangle.p2);
-    console.log('Rectanble Point 3 ->', dragRectangle.p3);
-    console.log('Rectanble Point 4 ->', dragRectangle.p4);
-
-    console.log('TimeStamp -> ', clickTime);
-    const start = Math.floor(startTime / 1000);
-    const end = Math.floor(nativeEvent.timestamp / 1000);
+    const start = startTime;
+    const end = Date.now(); //nativeEvent.timestamp;
     console.log('Reaction Time -> ', end - start);
+    updateTime(Math.round((end - start) / 10) / 100);
     updateGuess(true);
+    updateCanClick(false);
+    setTimeout(() => {
+      startGame();
+    }, 1000);
   };
 
   const locateClickStart = ({ nativeEvent }) => {
@@ -56,19 +72,6 @@ const Feed = ({ navigation }) => {
     rectangle.setPoint(nativeEvent.locationX, nativeEvent.locationY);
     updateRectangle(rectangle);
     console.log('Start Rectangle P1 -> ', rectangle.p1);
-  };
-
-  const startGame = () => {
-    console.log('START TIME -> ', Date.now());
-    const rectangle = new DragRectangle();
-    updateRectangle(rectangle);
-    updateGame(true);
-    handleNextImage();
-  };
-
-  const endGame = () => {
-    updateGame(false);
-    updateGuess(false);
   };
 
   const drawRectangle = () => {
@@ -128,15 +131,15 @@ const Feed = ({ navigation }) => {
 
   // On Feed mount, call the first set of images
   useEffect(() => {
-    fetchImages().then(data => setImageURLArray(data));
+    fetchImages().then((data) => setImageURLArray(data));
   }, [fetchImages]);
 
   // Once user has gone thru frist set of images, call the next set
   useEffect(() => {
     console.log('currentImageIndex', currentImageIndex);
     if (currentImageIndex === imageURLArray.length - 2) {
-      fetchImages().then(data =>
-        setImageURLArray(prevState => [...prevState, ...data]),
+      fetchImages().then((data) =>
+        setImageURLArray((prevState) => [...prevState, ...data]),
       );
     }
   }, [currentImageIndex, imageURLArray, fetchImages]);
@@ -145,7 +148,6 @@ const Feed = ({ navigation }) => {
     <>
       {madeGuess && (
         <View>
-          <Button title="Next!" color="blue" onPress={startGame} />
           <Button title="Finish!" color="blue" onPress={endGame} />
         </View>
       )}
@@ -153,14 +155,14 @@ const Feed = ({ navigation }) => {
         <View
           style={styles.main}
           onStartShouldSetResponder={() => true}
-          onResponderGrant={event => locateClickStart(event)}
-          onResponderRelease={event => locateRelease(event)}>
+          onResponderGrant={(event) => locateClickStart(event)}
+          onResponderRelease={(event) => locateRelease(event)}>
           <FastImage
             style={{ width: screenWidth, height: currentImageHeight }}
             source={{
               uri: imageURLArray[currentImageIndex],
             }}
-            onLoad={evt => {
+            onLoad={(evt) => {
               // used to fit the picture into the screen
               const imageHeight =
                 (evt.nativeEvent.height / evt.nativeEvent.width) * screenWidth;
@@ -171,6 +173,11 @@ const Feed = ({ navigation }) => {
               <View style={styles.rectangle}>{drawRectangle()}</View>
             )}
           </FastImage>
+        </View>
+      )}
+      {madeGuess && (
+        <View style={styles.score}>
+          <Text>{`React Speed: ${currentReactionTime}s`}</Text>
         </View>
       )}
       {!gameOn && <Button title="Go!" color="blue" onPress={startGame} />}
@@ -201,6 +208,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     overflow: 'visible',
     zIndex: 4,
+  },
+
+  score: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
   },
 });
 
