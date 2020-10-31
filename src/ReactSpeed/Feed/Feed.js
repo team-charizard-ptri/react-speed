@@ -8,6 +8,7 @@ import {
   // StatusBar,
   // FlatList,
   Button,
+  TouchableOpacity,
   // Image,
   // ImageBackground,
   Dimensions,
@@ -196,15 +197,27 @@ const Feed = ({ navigation }) => {
         </View>
       )}
       {madeGuess && (
-        <View style={styles.score}>
-          <Text
-            style={
-              styles.textStyle
-            }>{`React Speed: ${currentReactionTime}s`}</Text>
-          <Button title="Finish!" color="blue" onPress={endGame} />
+        <>
+          <View style={styles.score}>
+            <Text style={[styles.textStyle, styles.reactSpeed]}>
+              {'React Speed:'}
+            </Text>
+            <Text style={styles.textStyle}>{`${currentReactionTime}s`}</Text>
+          </View>
+          <View style={styles.main}>
+            <TouchableOpacity style={styles.button} onPress={startGame}>
+              <Text style={styles.buttonText}>Finish!</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+      {!gameOn && (
+        <View style={styles.main}>
+          <TouchableOpacity style={styles.button} onPress={startGame}>
+            <Text style={styles.buttonText}>Go!</Text>
+          </TouchableOpacity>
         </View>
       )}
-      {!gameOn && <Button title="Go!" color="blue" onPress={startGame} />}
     </>
   );
 };
@@ -218,10 +231,6 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     zIndex: 1,
   },
-  button: {
-    backgroundColor: 'green',
-  },
-
   buttonView: {
     zIndex: 0,
   },
@@ -251,9 +260,43 @@ const styles = StyleSheet.create({
   },
 
   textStyle: {
-    fontFamily: 'Cochin',
+    fontFamily: 'ChalkboardSE-Regular',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+
+  reactSpeed: {
+    fontFamily: 'Chalkduster',
+  },
+
+  button: {
+    backgroundColor: '#1DB954',
+    borderWidth: 2,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // paddingLeft: 20,
+    // paddingRight: 20,
+    // paddingTop: 10,
+    // paddingBottom: 10,
+    width: 200,
+    height: 50,
+    color: 'white',
+  },
+  buttonText: {
+    color: 'white',
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 20,
+    paddingBottom: 5,
+  },
+  title: {
+    fontFamily: 'Chalkduster',
+    fontSize: 45,
+  },
+  copy: {
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 20,
+    marginTop: 10,
   },
 });
 
