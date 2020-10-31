@@ -3,13 +3,15 @@ import auth from '@react-native-firebase/auth';
 import { StyleSheet, View, Text, Button } from 'react-native';
 //Components
 import AuthContextWrapper from '../../Utils/Context';
+import firestore from '@react-native-firebase/firestore';
 
 const Settings = ({ navigation }) => {
   const [userEmail, setUserEmail] = useState('');
   const { signOut } = React.useContext(AuthContextWrapper);
+  const ref = firestore().collection('interactions');
 
   useEffect(() => {
-    auth().onAuthStateChanged((userFirebase) => {
+    auth().onAuthStateChanged(userFirebase => {
       if (userFirebase) {
         setUserEmail(userFirebase.email);
       }
