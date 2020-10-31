@@ -32,10 +32,11 @@ const Feed = ({ navigation }) => {
   const [imageURLArray, setImageURLArray] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentImageHeight, setCurrentImageHeight] = useState();
+  const [currentTarget, updateTarget] = useState('Kite');
 
   const handleNextImage = useCallback(() => {
     updateCanClick(true);
-    setCurrentImageIndex(prevIndex => prevIndex + 1);
+    setCurrentImageIndex((prevIndex) => prevIndex + 1);
   }, []);
 
   const startGame = () => {
@@ -148,38 +149,40 @@ const Feed = ({ navigation }) => {
 
   // On Feed mount, call the first set of images
   useEffect(() => {
-    fetchImages().then(data => setImageURLArray(data));
+    fetchImages().then((data) => setImageURLArray(data));
   }, [fetchImages]);
 
   // Once user has gone thru frist set of images, call the next set
   useEffect(() => {
     console.log('currentImageIndex', currentImageIndex);
     if (currentImageIndex === imageURLArray.length - 2) {
-      fetchImages().then(data =>
-        setImageURLArray(prevState => [...prevState, ...data]),
+      fetchImages().then((data) =>
+        setImageURLArray((prevState) => [...prevState, ...data]),
       );
     }
   }, [currentImageIndex, imageURLArray, fetchImages]);
 
   return (
     <>
-      {madeGuess && (
-        <View>
-          <Button title="Finish!" color="blue" onPress={endGame} />
+      {gameOn && (
+        <View style={styles.textView}>
+          <Text style={styles.textStyle}>
+            {`Highlight: ${currentTarget}s`}{' '}
+          </Text>
         </View>
       )}
       {gameOn && (
         <View
           style={styles.main}
           onStartShouldSetResponder={() => true}
-          onResponderGrant={event => locateClickStart(event)}
-          onResponderRelease={event => locateRelease(event)}>
+          onResponderGrant={(event) => locateClickStart(event)}
+          onResponderRelease={(event) => locateRelease(event)}>
           <FastImage
             style={{ width: screenWidth, height: currentImageHeight }}
             source={{
               uri: imageURLArray[currentImageIndex],
             }}
-            onLoad={evt => {
+            onLoad={(evt) => {
               // used to fit the picture into the screen
               const imageHeight =
                 (evt.nativeEvent.height / evt.nativeEvent.width) * screenWidth;
@@ -194,7 +197,11 @@ const Feed = ({ navigation }) => {
       )}
       {madeGuess && (
         <View style={styles.score}>
-          <Text>{`React Speed: ${currentReactionTime}s`}</Text>
+          <Text
+            style={
+              styles.textStyle
+            }>{`React Speed: ${currentReactionTime}s`}</Text>
+          <Button title="Finish!" color="blue" onPress={endGame} />
         </View>
       )}
       {!gameOn && <Button title="Go!" color="blue" onPress={startGame} />}
@@ -232,6 +239,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
+  },
+
+  textView: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    overflow: 'visible',
+    zIndex: 1,
+  },
+
+  textStyle: {
+    fontFamily: 'Cochin',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
