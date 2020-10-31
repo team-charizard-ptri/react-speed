@@ -175,7 +175,11 @@ const Feed = ({ navigation }) => {
           </FastImage>
         </View>
       )}
-      {madeGuess && <Text>{`${currentReactionTime}s`}</Text>}
+      {madeGuess && (
+        <View style={styles.score}>
+          <Text>{`React Speed: ${currentReactionTime}s`}</Text>
+        </View>
+      )}
       {!gameOn && <Button title="Go!" color="blue" onPress={startGame} />}
     </>
   );
@@ -204,6 +208,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     overflow: 'visible',
     zIndex: 4,
+  },
+
+  score: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
   },
 });
 
