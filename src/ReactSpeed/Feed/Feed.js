@@ -16,6 +16,7 @@ import Svg, { Line } from 'react-native-svg';
 import DragRectangle from '../../Utils/dragRectangle';
 import FastImage from 'react-native-fast-image';
 import { FIREBASE_IMAGES } from '@env';
+import { createInteraction } from '../../Utils/firebaseDBrequests';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 
@@ -34,7 +35,7 @@ const Feed = ({ navigation }) => {
 
   const handleNextImage = useCallback(() => {
     updateCanClick(true);
-    setCurrentImageIndex((prevIndex) => prevIndex + 1);
+    setCurrentImageIndex(prevIndex => prevIndex + 1);
   }, []);
 
   const startGame = () => {
@@ -59,7 +60,23 @@ const Feed = ({ navigation }) => {
     const start = startTime;
     const end = Date.now(); //nativeEvent.timestamp;
     console.log('Reaction Time -> ', end - start);
-    updateTime(Math.round((end - start) / 10) / 100);
+    const reactionTime = Math.round((end - start) / 10) / 100;
+    updateTime(reactionTime);
+
+    // Send Interaction Data to the DB
+    createInteraction({
+      photoID: imageURLArray[currentImageIndex],
+      firstClick_Coordinates: {
+        x: dragRectangle.p1.xCoord,
+        y: dragRectangle.p1.yCoord,
+      },
+      secondClick_Coordinates: {
+        x: dragRectangle.p4.xCoord,
+        y: dragRectangle.p4.yCoord,
+      },
+      reactionTime: reactionTime,
+    });
+
     updateGuess(true);
     updateCanClick(false);
     setTimeout(() => {
@@ -131,15 +148,15 @@ const Feed = ({ navigation }) => {
 
   // On Feed mount, call the first set of images
   useEffect(() => {
-    fetchImages().then((data) => setImageURLArray(data));
+    fetchImages().then(data => setImageURLArray(data));
   }, [fetchImages]);
 
   // Once user has gone thru frist set of images, call the next set
   useEffect(() => {
     console.log('currentImageIndex', currentImageIndex);
     if (currentImageIndex === imageURLArray.length - 2) {
-      fetchImages().then((data) =>
-        setImageURLArray((prevState) => [...prevState, ...data]),
+      fetchImages().then(data =>
+        setImageURLArray(prevState => [...prevState, ...data]),
       );
     }
   }, [currentImageIndex, imageURLArray, fetchImages]);
@@ -155,14 +172,14 @@ const Feed = ({ navigation }) => {
         <View
           style={styles.main}
           onStartShouldSetResponder={() => true}
-          onResponderGrant={(event) => locateClickStart(event)}
-          onResponderRelease={(event) => locateRelease(event)}>
+          onResponderGrant={event => locateClickStart(event)}
+          onResponderRelease={event => locateRelease(event)}>
           <FastImage
             style={{ width: screenWidth, height: currentImageHeight }}
             source={{
               uri: imageURLArray[currentImageIndex],
             }}
-            onLoad={(evt) => {
+            onLoad={evt => {
               // used to fit the picture into the screen
               const imageHeight =
                 (evt.nativeEvent.height / evt.nativeEvent.width) * screenWidth;
