@@ -50,7 +50,7 @@ const App = () => {
 
   const authContext = useMemo(
     () => ({
-      signIn: async (data) => {
+      signIn: async data => {
         // In a production app, we need to send some data (usually username, password) to server and get a token
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `AsyncStorage`
@@ -69,7 +69,7 @@ const App = () => {
         auth().signOut();
         console.log('User signed out!');
       },
-      signUp: async (data) => {
+      signUp: async data => {
         // In a production app, we need to send user data to server and get a token
         // We will also need to handle errors if sign up failed
         // After getting token, we need to persist the token using `AsyncStorage`
@@ -79,8 +79,11 @@ const App = () => {
           .createUserWithEmailAndPassword(data.username, data.password)
           .then(() => {
             console.log('User account created & signed in!');
+            const userFirebase = auth().currentUser;
+            console.log('user', userFirebase);
+            dispatch({ type: 'SIGN_IN', userFirebase: userFirebase });
           })
-          .catch((error) => {
+          .catch(error => {
             if (error.code === 'auth/email-already-in-use') {
               console.log('That email address is already in use!');
             }
@@ -95,9 +98,6 @@ const App = () => {
 
             console.error(error);
           });
-
-        const userFirebase = auth().currentUser;
-        dispatch({ type: 'SIGN_IN', userFirebase: userFirebase });
       },
     }),
     [],
