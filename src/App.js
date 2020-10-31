@@ -26,6 +26,7 @@ import ResetPasswordScreen from './AuthScreens/ResetPasswordScreen';
 import AuthIntro from './AuthScreens/AuthIntro';
 import authReducer from './Utils/AuthReducer';
 import AuthContextWrapper from './Utils/Context';
+import AuthView from './AuthScreens/AuthView';
 
 const Stack = createStackNavigator();
 
@@ -118,7 +119,7 @@ const App = () => {
           {state.user == null ? (
             // No token found, user isn't signed in
             <React.Fragment>
-              <Stack.Screen name="Welcome" component={AuthIntro} />
+              <Stack.Screen name="Welcome" component={AuthView} />
               <Stack.Screen
                 name="SignIn"
                 component={SignInScreen}
