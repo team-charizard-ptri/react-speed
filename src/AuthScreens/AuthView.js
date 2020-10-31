@@ -11,8 +11,8 @@ import {
   ImageBackground,
 } from 'react-native';
 
-import { fonts, colors } from '../../styles';
-import { TextInput, Button } from '../../Components';
+import { fonts, colors } from '../styles';
+import { TextInput, Button } from '../Components';
 
 const FORM_STATES = {
   LOGIN: 0,
