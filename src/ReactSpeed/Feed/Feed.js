@@ -8,6 +8,7 @@ import {
   // StatusBar,
   // FlatList,
   Button,
+  TouchableOpacity,
   // Image,
   // ImageBackground,
   Dimensions,
@@ -32,10 +33,11 @@ const Feed = ({ navigation }) => {
   const [imageURLArray, setImageURLArray] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentImageHeight, setCurrentImageHeight] = useState();
+  const [currentTarget, updateTarget] = useState('Kite');
 
   const handleNextImage = useCallback(() => {
     updateCanClick(true);
-    setCurrentImageIndex(prevIndex => prevIndex + 1);
+    setCurrentImageIndex((prevIndex) => prevIndex + 1);
   }, []);
 
   const startGame = () => {
@@ -148,38 +150,40 @@ const Feed = ({ navigation }) => {
 
   // On Feed mount, call the first set of images
   useEffect(() => {
-    fetchImages().then(data => setImageURLArray(data));
+    fetchImages().then((data) => setImageURLArray(data));
   }, [fetchImages]);
 
   // Once user has gone thru frist set of images, call the next set
   useEffect(() => {
     console.log('currentImageIndex', currentImageIndex);
     if (currentImageIndex === imageURLArray.length - 2) {
-      fetchImages().then(data =>
-        setImageURLArray(prevState => [...prevState, ...data]),
+      fetchImages().then((data) =>
+        setImageURLArray((prevState) => [...prevState, ...data]),
       );
     }
   }, [currentImageIndex, imageURLArray, fetchImages]);
 
   return (
     <>
-      {madeGuess && (
-        <View>
-          <Button title="Finish!" color="blue" onPress={endGame} />
+      {gameOn && (
+        <View style={styles.textView}>
+          <Text style={styles.textStyle}>
+            {`Highlight: ${currentTarget}s`}{' '}
+          </Text>
         </View>
       )}
       {gameOn && (
         <View
           style={styles.main}
           onStartShouldSetResponder={() => true}
-          onResponderGrant={event => locateClickStart(event)}
-          onResponderRelease={event => locateRelease(event)}>
+          onResponderGrant={(event) => locateClickStart(event)}
+          onResponderRelease={(event) => locateRelease(event)}>
           <FastImage
             style={{ width: screenWidth, height: currentImageHeight }}
             source={{
               uri: imageURLArray[currentImageIndex],
             }}
-            onLoad={evt => {
+            onLoad={(evt) => {
               // used to fit the picture into the screen
               const imageHeight =
                 (evt.nativeEvent.height / evt.nativeEvent.width) * screenWidth;
@@ -193,11 +197,27 @@ const Feed = ({ navigation }) => {
         </View>
       )}
       {madeGuess && (
-        <View style={styles.score}>
-          <Text>{`React Speed: ${currentReactionTime}s`}</Text>
+        <>
+          <View style={styles.score}>
+            <Text style={[styles.textStyle, styles.reactSpeed]}>
+              {'React Speed:'}
+            </Text>
+            <Text style={styles.textStyle}>{`${currentReactionTime}s`}</Text>
+          </View>
+          <View style={styles.main}>
+            <TouchableOpacity style={styles.button} onPress={startGame}>
+              <Text style={styles.buttonText}>Finish!</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+      {!gameOn && (
+        <View style={styles.main}>
+          <TouchableOpacity style={styles.button} onPress={startGame}>
+            <Text style={styles.buttonText}>Go!</Text>
+          </TouchableOpacity>
         </View>
       )}
-      {!gameOn && <Button title="Go!" color="blue" onPress={startGame} />}
     </>
   );
 };
@@ -211,10 +231,6 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     zIndex: 1,
   },
-  button: {
-    backgroundColor: 'green',
-  },
-
   buttonView: {
     zIndex: 0,
   },
@@ -232,6 +248,55 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
+  },
+
+  textView: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    overflow: 'visible',
+    zIndex: 1,
+  },
+
+  textStyle: {
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+
+  reactSpeed: {
+    fontFamily: 'Chalkduster',
+  },
+
+  button: {
+    backgroundColor: '#1DB954',
+    borderWidth: 2,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // paddingLeft: 20,
+    // paddingRight: 20,
+    // paddingTop: 10,
+    // paddingBottom: 10,
+    width: 200,
+    height: 50,
+    color: 'white',
+  },
+  buttonText: {
+    color: 'white',
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 20,
+    paddingBottom: 5,
+  },
+  title: {
+    fontFamily: 'Chalkduster',
+    fontSize: 45,
+  },
+  copy: {
+    fontFamily: 'ChalkboardSE-Regular',
+    fontSize: 20,
+    marginTop: 10,
   },
 });
 
